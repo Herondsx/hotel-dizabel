@@ -1,0 +1,379 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Hotel Solar D'Izabel · Campos do Jordão</title>
+  <meta name="description" content="Hotel Solar D'Izabel, em Capivari, Campos do Jordão. A 300 metros do centrinho: café da manhã elogiado, salas com lareira e apartamentos com hidromassagem. Explore o hotel em 3D.">
+  <meta name="theme-color" content="#140a05">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Hotel Solar D'Izabel · Campos do Jordão">
+  <meta property="og:description" content="Seu refúgio na Mantiqueira, a 300 metros do centrinho de Capivari. Explore o hotel em 3D.">
+  <meta property="og:image" content="assets/img/hotel/15.jpg">
+  <meta property="og:locale" content="pt_BR">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32.png">
+  <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+  <link rel="preload" href="assets/fonts/cormorant-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/cormorant-latin-400-italic.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/josefin-sans-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="vendor/lenis/lenis.css">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <script type="importmap">{ "imports": { "three": "./vendor/three/three.min.js" } }</script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Hotel",
+    "name": "Hotel Solar D'Izabel",
+    "description": "Hotel em estilo de montanha a 300 metros do centrinho de Capivari, em Campos do Jordão.",
+    "telephone": "+55 12 3669-3030",
+    "email": "reservas@dizabel.com.br",
+    "address": { "@type": "PostalAddress", "streetAddress": "R. Dr. Plínio Barbosa Lima, 59", "addressLocality": "Campos do Jordão", "addressRegion": "SP", "addressCountry": "BR" },
+    "checkinTime": "14:00", "checkoutTime": "12:00",
+    "amenityFeature": ["Café da manhã", "Estacionamento", "Wi-Fi", "Recepção 24 horas", "Lareira"],
+    "sameAs": ["https://www.instagram.com/hotelsolardizabel/", "https://www.facebook.com/solardizabel/"]
+  }
+  </script>
+</head>
+<body class="is-loading">
+
+  <!-- Preloader -->
+  <div class="preloader" aria-hidden="true">
+    <div class="preloader__logo"></div>
+    <div class="preloader__meta">
+      <span>Campos do Jordão</span>
+      <span class="preloader__count"><b>0</b>%</span>
+      <span>Serra da Mantiqueira</span>
+    </div>
+    <div class="preloader__bar"><i></i></div>
+  </div>
+
+  <div class="cursor" aria-hidden="true"><span class="cursor__label"></span></div>
+  <div class="grain" aria-hidden="true"></div>
+
+  <!-- Navegação -->
+  <header class="nav">
+    <a class="nav__brand" href="#inicio" aria-label="Hotel Solar D'Izabel — início">
+      <span class="logo-mask"></span>
+      <span class="nav__brand-text">Solar D'Izabel</span>
+    </a>
+    <nav class="nav__links" aria-label="Principal">
+      <a href="#hotel">O Hotel</a>
+      <a href="#maquete">Maquete 3D</a>
+      <a href="#acomodacoes">Acomodações</a>
+      <a href="#cafe">Café</a>
+      <a href="#galeria">Galeria</a>
+      <a href="#localizacao">Localização</a>
+    </nav>
+    <a class="btn btn--gold btn--sm nav__cta" href="https://reservas.dizabel.com.br/" target="_blank" rel="noopener">Consultar valores</a>
+    <button class="nav__toggle" aria-label="Abrir menu" aria-expanded="false"><span></span><span></span></button>
+  </header>
+
+  <div class="menu" aria-hidden="true">
+    <nav class="menu__links">
+      <a href="#hotel"><small>01</small>O Hotel</a>
+      <a href="#maquete"><small>02</small>Maquete 3D</a>
+      <a href="#acomodacoes"><small>03</small>Acomodações</a>
+      <a href="#cafe"><small>04</small>Café da manhã</a>
+      <a href="#galeria"><small>05</small>Galeria</a>
+      <a href="#informacoes"><small>06</small>Informações</a>
+      <a href="#localizacao"><small>07</small>Localização</a>
+    </nav>
+    <div class="menu__foot">
+      <a href="tel:+551236693030">(12) 3669-3030</a>
+      <a href="mailto:reservas@dizabel.com.br">reservas@dizabel.com.br</a>
+    </div>
+  </div>
+
+  <main>
+    <!-- HERO 3D -->
+    <section class="hero" id="inicio">
+      <div class="hero__stage">
+        <canvas class="hero__canvas" aria-label="Ilustração 3D do Hotel Solar D'Izabel ao entardecer"></canvas>
+        <div class="hero__fallback" style="background-image:url('assets/img/hotel/15.jpg')"></div>
+        <div class="hero__shade"></div>
+        <div class="hero__content">
+          <p class="eyebrow hero__eyebrow"><span>Hotel</span><i></i><span>Capivari</span><i></i><span>Campos do Jordão</span></p>
+          <h1 class="hero__title">
+            <span class="line"><span class="word">Solar</span></span>
+            <span class="line"><em class="word">D'Izabel</em></span>
+          </h1>
+          <p class="hero__lead">Seu refúgio na Mantiqueira, a 300 metros do centrinho de Capivari.</p>
+          <div class="hero__ctas">
+            <a class="btn btn--gold" href="#maquete" data-cursor="Explorar">Explorar o hotel em 3D</a>
+            <a class="btn btn--ghost" href="https://reservas.dizabel.com.br/" target="_blank" rel="noopener">Consultar valores</a>
+          </div>
+        </div>
+        <div class="hero__aside">
+          <button class="mood" type="button" aria-pressed="true" aria-label="Alternar entre dia e noite">
+            <span class="mood__opt mood__opt--day">Dia</span>
+            <span class="mood__track"><i></i></span>
+            <span class="mood__opt mood__opt--night">Noite</span>
+          </button>
+          <p class="hero__hint">Mova o mouse · role para entrar</p>
+        </div>
+        <div class="hero__scroll" aria-hidden="true"><span></span></div>
+        <div class="hero__fade"></div>
+      </div>
+    </section>
+
+    <!-- O HOTEL -->
+    <section class="intro" id="hotel">
+      <div class="container intro__grid">
+        <div class="intro__text">
+          <p class="eyebrow" data-reveal>O Solar D'Izabel</p>
+          <h2 class="h2" data-split>A 300 metros do centrinho de <em>Capivari</em></h2>
+          <p class="lead" data-reveal>Um refúgio de conforto e tranquilidade.</p>
+          <p data-reveal>Aqui, cada detalhe foi pensado para lhe proporcionar uma experiência inesquecível e única, desde o café da manhã bastante elogiado até as acomodações extremamente confortáveis. Um ambiente que combina o aconchego de uma casa de campo com a sofisticação e os serviços de um hotel típico de montanha.</p>
+          <p data-reveal>Projeto arquitetônico, estrutura e decoração típicos de montanha, com muitos detalhes em madeira — sofisticado e acolhedor, na cidade mais alta do Brasil.</p>
+          <ul class="stats" data-reveal>
+            <li><b data-count="300">300</b><span>metros do centrinho</span></li>
+            <li><b data-count="24">24</b><span>horas de recepção</span></li>
+            <li><b>8h–11h</b><span>café da manhã</span></li>
+          </ul>
+        </div>
+        <div class="intro__media">
+          <figure class="intro__img intro__img--a" data-parallax="-8"><img src="assets/img/hotel/9.jpg" alt="Fachada do Hotel Solar D'Izabel" loading="lazy"></figure>
+          <figure class="intro__img intro__img--b" data-parallax="10"><img src="assets/img/hotel/4.jpg" alt="Lareira acesa na sala de estar" loading="lazy"></figure>
+          <figure class="intro__img intro__img--c" data-parallax="-14"><img src="assets/img/hotel/t/11.jpg" alt="Recepção do hotel" loading="lazy"></figure>
+          <span class="intro__badge" aria-hidden="true">
+            <svg viewBox="0 0 120 120"><defs><path id="badge-circle" d="M60,60 m-47,0 a47,47 0 1,1 94,0 a47,47 0 1,1 -94,0"/></defs><text><textPath href="#badge-circle">Hotel Solar D'Izabel · Campos do Jordão · </textPath></text></svg>
+            <span class="logo-mask"></span>
+          </span>
+        </div>
+      </div>
+    </section>
+
+    <!-- MAQUETE 3D -->
+    <section class="maquete" id="maquete">
+      <div class="maquete__stage">
+        <canvas class="maquete__canvas" aria-label="Maquete 3D interativa do hotel"></canvas>
+        <div class="maquete__pins"></div>
+        <div class="maquete__fallback">
+          <img src="assets/img/hotel/14.jpg" alt="Hotel Solar D'Izabel" loading="lazy">
+        </div>
+
+        <div class="maquete__head">
+          <p class="eyebrow">Maquete interativa</p>
+          <h2 class="h2">Entre no hotel <em>andar por andar</em></h2>
+          <p class="maquete__sub">Role para abrir a maquete. Passe o mouse sobre um ambiente e clique para vê-lo de perto.</p>
+        </div>
+
+        <div class="maquete__progress" aria-hidden="true"><span>Fachada</span><i><b></b></i><span>Por dentro</span></div>
+
+        <aside class="mq-panel" aria-live="polite">
+          <div class="mq-panel__idle">
+            <p class="eyebrow">Ambientes</p>
+            <h3 class="h3">Escolha um ambiente</h3>
+            <ul class="mq-list"></ul>
+          </div>
+          <div class="mq-panel__detail" hidden>
+            <button class="mq-panel__back" type="button">← Todos os ambientes</button>
+            <p class="eyebrow mq-f-eyebrow"></p>
+            <h3 class="h3 mq-f-name"></h3>
+            <p class="mq-f-short"></p>
+            <div class="mq-thumbs"></div>
+            <ul class="chips mq-f-chips"></ul>
+            <div class="mq-actions">
+              <button class="btn btn--gold btn--sm mq-tour" type="button">Ver fotos reais</button>
+              <a class="btn btn--ghost btn--sm" href="https://reservas.dizabel.com.br/" target="_blank" rel="noopener">Consultar valores</a>
+            </div>
+          </div>
+        </aside>
+
+        <div class="maquete__floors" role="group" aria-label="Filtrar por andar">
+          <button type="button" class="is-active" data-floor="all">Todos</button>
+          <button type="button" data-floor="0">Térreo</button>
+          <button type="button" data-floor="1">1º andar</button>
+          <button type="button" data-floor="2">2º andar</button>
+        </div>
+        <p class="maquete__hint"><span>Arraste para girar</span><span>Passe o mouse</span><span>Clique para ampliar</span></p>
+        <p class="maquete__note">Representação ilustrativa. A disposição real dos ambientes pode variar.</p>
+      </div>
+    </section>
+
+    <!-- ACOMODAÇÕES -->
+    <section class="rooms" id="acomodacoes">
+      <div class="container">
+        <header class="section-head">
+          <p class="eyebrow" data-reveal>Acomodações</p>
+          <h2 class="h2" data-split>Conforto em <em>primeiro lugar</em></h2>
+          <p class="section-head__sub" data-reveal>Passe o mouse sobre as fotos para percorrer cada quarto.</p>
+        </header>
+        <div class="rooms__grid"></div>
+        <article class="romantic" data-reveal>
+          <div class="romantic__media"><img src="assets/img/romantica/1.jpg" alt="Decoração romântica com pétalas e cisnes de toalha" loading="lazy"></div>
+          <div class="romantic__body">
+            <p class="eyebrow">Experiência</p>
+            <h3 class="h3">Decoração <em>romântica</em></h3>
+            <p>Que tal aproveitar um momento especial a dois, em um ambiente encantador e repleto de romance?</p>
+            <button class="btn btn--ghost-dark btn--sm" type="button" data-tour="romantica">Ver as fotos</button>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- CAFÉ -->
+    <section class="cafe" id="cafe">
+      <div class="cafe__pin">
+        <div class="cafe__bg" style="background-image:url('assets/img/cafe-hero.jpg')"></div>
+        <div class="cafe__intro">
+          <p class="eyebrow">Café da manhã</p>
+          <h2 class="h2">Feito com <em>carinho</em></h2>
+          <p>Nosso café da manhã é bastante elogiado pelos hóspedes, não somente pela variedade, mas também pelo carinho com que é produzido por nossa equipe. Diversos itens são preparados aqui mesmo e estão sempre fresquinhos.</p>
+          <p class="cafe__time"><span>Servido diariamente</span><b>8h às 11h</b></p>
+        </div>
+        <div class="cafe__viewport"><div class="cafe__track"></div></div>
+      </div>
+    </section>
+
+    <!-- DIFERENCIAIS -->
+    <section class="perks">
+      <div class="container">
+        <header class="section-head section-head--center">
+          <p class="eyebrow" data-reveal>Diferenciais</p>
+          <h2 class="h2" data-split>Detalhes que aquecem <em>a serra</em></h2>
+        </header>
+        <div class="perks__grid">
+          <div class="perk" data-reveal><svg viewBox="0 0 48 48"><path d="M10 20h22v10a8 8 0 0 1-8 8h-6a8 8 0 0 1-8-8V20Z"/><path d="M32 23h3a4 4 0 0 1 0 8h-3"/><path d="M16 8c-2 3 2 5 0 8M22 8c-2 3 2 5 0 8M28 8c-2 3 2 5 0 8"/></svg><h3>Café da manhã</h3><p>Buffet das 8h às 11h, com itens caseiros</p></div>
+          <div class="perk" data-reveal><svg viewBox="0 0 48 48"><path d="M10 40V14l14-8 14 8v26"/><path d="M18 40V24h12v16"/><path d="M21 31h6"/><path d="M14 18h20"/></svg><h3>Salas com lareira</h3><p>Sala de estar e sala de TV aquecidas</p></div>
+          <div class="perk" data-reveal><svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="16"/><path d="M24 14v10l7 5"/></svg><h3>Recepção 24h</h3><p>Sempre alguém para receber você</p></div>
+          <div class="perk" data-reveal><svg viewBox="0 0 48 48"><path d="M6 19a26 26 0 0 1 36 0"/><path d="M12 25a17 17 0 0 1 24 0"/><path d="M18 31a8 8 0 0 1 12 0"/><circle cx="24" cy="37" r="1.5"/></svg><h3>Wi-Fi cortesia</h3><p>Em todas as áreas sociais e apartamentos</p></div>
+          <div class="perk" data-reveal><svg viewBox="0 0 48 48"><rect x="9" y="9" width="30" height="30" rx="7"/><path d="M20 32V16h6a5 5 0 0 1 0 10h-6"/></svg><h3>Estacionamento</h3><p>Cortesia para hóspedes</p></div>
+          <div class="perk" data-reveal><svg viewBox="0 0 48 48"><circle cx="24" cy="13" r="5"/><path d="M14 40l4-16h12l4 16"/><path d="M12 24l6-4M36 24l-6-4"/></svg><h3>Espaço Kids</h3><p>Playground no jardim</p></div>
+          <div class="perk" data-reveal><svg viewBox="0 0 48 48"><path d="M8 26h32v4a8 8 0 0 1-8 8H16a8 8 0 0 1-8-8v-4Z"/><path d="M12 26V12a4 4 0 0 1 8 0"/><path d="M14 38l-2 4M34 38l2 4"/><path d="M26 18c0 2 2 2 2 4M31 16c0 2 2 2 2 4"/></svg><h3>Hidromassagem</h3><p>Nos apartamentos Master</p></div>
+          <div class="perk" data-reveal><svg viewBox="0 0 48 48"><path d="M8 36h32"/><path d="M12 30c3-3 6 3 9 0s6 3 9 0 6 3 9 0"/><path d="M12 22c3-3 6 3 9 0s6 3 9 0 6 3 9 0"/></svg><h3>Piso radiante</h3><p>Calefação e toalheiro aquecido</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- GALERIA -->
+    <section class="gallery" id="galeria">
+      <div class="container">
+        <header class="section-head">
+          <p class="eyebrow" data-reveal>Galeria</p>
+          <h2 class="h2" data-split>Faça um <em>tour fotográfico</em></h2>
+          <div class="gallery__filters" role="tablist" aria-label="Filtrar fotos">
+            <button type="button" class="is-active" data-cat="all">Tudo</button>
+            <button type="button" data-cat="fachada">Fachada</button>
+            <button type="button" data-cat="ambientes">Ambientes</button>
+            <button type="button" data-cat="quartos">Quartos</button>
+            <button type="button" data-cat="cafe">Café</button>
+          </div>
+        </header>
+        <div class="gallery__grid"></div>
+      </div>
+    </section>
+
+    <!-- INFORMAÇÕES -->
+    <section class="infos" id="informacoes">
+      <div class="container infos__grid">
+        <header class="section-head">
+          <p class="eyebrow" data-reveal>Informações gerais</p>
+          <h2 class="h2" data-split>Antes de <em>subir a serra</em></h2>
+          <p class="section-head__sub" data-reveal>Tudo o que você precisa saber para planejar a sua estadia.</p>
+          <div class="infos__times" data-reveal>
+            <div><small>Check-in</small><b>14h</b></div>
+            <div><small>Check-out</small><b>12h</b></div>
+          </div>
+        </header>
+        <div class="accordion"></div>
+      </div>
+    </section>
+
+    <!-- LOCALIZAÇÃO -->
+    <section class="location" id="localizacao">
+      <div class="container location__grid">
+        <div class="location__text">
+          <p class="eyebrow" data-reveal>Localização</p>
+          <h2 class="h2" data-split>Em Vila <em>Capivari</em></h2>
+          <p class="lead" data-reveal>Localização privilegiada, somente a 300 m do centrinho.</p>
+          <address data-reveal>R. Dr. Plínio Barbosa Lima, 59<br>Capivari, Campos do Jordão — SP</address>
+          <div class="location__btns" data-reveal>
+            <a class="btn btn--ghost-dark btn--sm" href="https://www.google.com/maps/dir/?api=1&amp;destination=R.+Dr.+Pl%C3%ADnio+Barbosa+Lima,+59+-+Capivari,+Campos+do+Jord%C3%A3o+-+SP" target="_blank" rel="noopener">Como chegar</a>
+            <a class="btn btn--ghost-dark btn--sm" href="https://waze.com/ul?q=R.%20Dr.%20Pl%C3%ADnio%20Barbosa%20Lima%2C%2059%2C%20Campos%20do%20Jord%C3%A3o&amp;navigate=yes" target="_blank" rel="noopener">Abrir no Waze</a>
+          </div>
+        </div>
+        <div class="location__map" data-reveal>
+          <iframe title="Mapa do Hotel Solar D'Izabel" loading="lazy" referrerpolicy="no-referrer-when-downgrade" data-src="https://maps.google.com/maps?q=R.%20Dr.%20Pl%C3%ADnio%20Barbosa%20Lima%2C%2059%20-%20Capivari%2C%20Campos%20do%20Jord%C3%A3o%20-%20SP&amp;z=16&amp;output=embed"></iframe>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA FINAL -->
+    <section class="final">
+      <div class="final__bg" style="background-image:url('assets/img/hotel/14.jpg')"></div>
+      <div class="container final__inner">
+        <p class="eyebrow" data-reveal>Reservas</p>
+        <h2 class="final__title" data-split>Vivencie uma experiência <em>única</em></h2>
+        <p data-reveal>Faça sua reserva e venha para a cidade mais alta do Brasil.</p>
+        <div class="final__btns" data-reveal>
+          <a class="btn btn--gold" href="https://reservas.dizabel.com.br/" target="_blank" rel="noopener">Consultar valores</a>
+          <a class="btn btn--ghost" href="https://api.whatsapp.com/send?phone=551236693030" target="_blank" rel="noopener">Falar no WhatsApp</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer__grid">
+      <div class="footer__brand">
+        <span class="logo-mask logo-mask--lg"></span>
+      </div>
+      <div>
+        <h4>Informações &amp; Reservas</h4>
+        <a href="tel:+551236693030">(12) 3669-3030</a>
+        <a href="https://api.whatsapp.com/send?phone=551236693030" target="_blank" rel="noopener">WhatsApp (12) 3669-3030</a>
+        <a href="mailto:reservas@dizabel.com.br">reservas@dizabel.com.br</a>
+      </div>
+      <div>
+        <h4>Central de Reservas</h4>
+        <p>Segunda a sexta: 9h às 22h<br>Sábado: 9h às 20h<br>Domingo: 9h às 17h</p>
+      </div>
+      <div>
+        <h4>Onde estamos</h4>
+        <p>R. Dr. Plínio Barbosa Lima, 59<br>Capivari, Campos do Jordão — SP</p>
+        <div class="footer__social">
+          <a href="https://www.instagram.com/hotelsolardizabel/" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg></a>
+          <a href="https://www.facebook.com/solardizabel/" target="_blank" rel="noopener" aria-label="Facebook"><svg viewBox="0 0 24 24"><path d="M14 8h3V4h-3a4 4 0 0 0-4 4v3H7v4h3v6h4v-6h3l1-4h-4V8Z"/></svg></a>
+        </div>
+      </div>
+    </div>
+    <div class="container footer__bottom">
+      <span>© <span class="year"></span> Hotel Solar D'Izabel · Campos do Jordão</span>
+      <a href="#inicio" class="to-top">Voltar ao topo ↑</a>
+    </div>
+  </footer>
+
+  <a class="whats" href="https://api.whatsapp.com/send?phone=551236693030" target="_blank" rel="noopener" aria-label="Fale conosco pelo WhatsApp">
+    <svg viewBox="0 0 32 32"><path d="M16 3a13 13 0 0 0-11.2 19.6L3 29l6.6-1.7A13 13 0 1 0 16 3Zm0 23.6a10.6 10.6 0 0 1-5.4-1.5l-.4-.2-3.9 1 1-3.8-.2-.4A10.6 10.6 0 1 1 16 26.6Zm5.8-7.9c-.3-.2-1.9-.9-2.2-1s-.5-.2-.7.2-.8 1-1 1.2-.4.2-.7 0a8.7 8.7 0 0 1-4.3-3.8c-.3-.6.3-.5.9-1.6a.6.6 0 0 0 0-.5l-1-2.4c-.3-.6-.5-.5-.7-.5h-.6a1.2 1.2 0 0 0-.9.4 3.7 3.7 0 0 0-1.1 2.7 6.4 6.4 0 0 0 1.3 3.4 14.6 14.6 0 0 0 5.6 5c2.1.9 2.9 1 4 .8a3.4 3.4 0 0 0 2.2-1.6 2.8 2.8 0 0 0 .2-1.6c-.1-.1-.3-.2-.6-.3Z"/></svg>
+  </a>
+
+  <!-- Tour imersivo de fotos -->
+  <div class="tour" role="dialog" aria-modal="true" aria-label="Tour de fotos" hidden>
+    <div class="tour__bg"></div>
+    <header class="tour__head">
+      <div>
+        <p class="eyebrow tour__eyebrow"></p>
+        <h3 class="tour__title"></h3>
+      </div>
+      <button class="tour__close" type="button" aria-label="Fechar">✕</button>
+    </header>
+    <div class="tour__ring" data-cursor="Arraste"><div class="tour__ring-inner"></div></div>
+    <div class="tour__viewer" hidden>
+      <img class="tour__img" alt="">
+      <button class="tour__nav tour__nav--prev" type="button" aria-label="Foto anterior">←</button>
+      <button class="tour__nav tour__nav--next" type="button" aria-label="Próxima foto">→</button>
+      <p class="tour__count"></p>
+    </div>
+    <footer class="tour__foot">
+      <p class="tour__hint">Arraste para girar · Clique em uma foto para ampliar</p>
+      <a class="btn btn--gold btn--sm" href="https://reservas.dizabel.com.br/" target="_blank" rel="noopener">Consultar valores</a>
+    </footer>
+  </div>
+
+  <script src="vendor/gsap/gsap.min.js" defer></script>
+  <script src="vendor/gsap/ScrollTrigger.min.js" defer></script>
+  <script src="vendor/lenis/lenis.min.js" defer></script>
+  <script type="module" src="assets/js/main.js"></script>
+</body>
+</html>
