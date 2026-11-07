@@ -355,7 +355,7 @@ body.is-ready .hero__eyebrow, body.is-ready .hero__lead, body.is-ready .hero__ct
 .tod__label { font-size: 0.6rem; font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase; color: var(--on-dark-2); }
 .tod__time { margin-left: auto; font-family: var(--serif); font-size: 1.5rem; line-height: 1; letter-spacing: 0.02em; font-variant-numeric: tabular-nums; }
 .tod__icon { position: relative; width: 18px; height: 18px; flex: none; }
-.tod__icon i { position: absolute; inset: 0; border-radius: 50%; background: #ffd27a; box-shadow: 0 0 12px #ffc35a; transition: background-color 0.6s, box-shadow 0.6s; }
+.tod__icon i { position: absolute; inset: 0; border-radius: 50%; overflow: hidden; background: #ffd27a; box-shadow: 0 0 12px #ffc35a; transition: background-color 0.6s, box-shadow 0.6s; }
 .tod__icon i::after { content: ''; position: absolute; inset: -1px -1px -1px 5px; border-radius: 50%; background: rgba(10, 10, 22, 0.9); transform: translateX(14px); transition: transform 0.6s var(--ease); }
 .tod.is-night .tod__icon i { background: #e9eefc; box-shadow: 0 0 12px rgba(200, 215, 255, 0.9); }
 .tod.is-night .tod__icon i::after { transform: translateX(3px); }
