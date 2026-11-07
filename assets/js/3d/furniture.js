@@ -1,13 +1,9 @@
 // Mobiliário em miniatura para a maquete (escala real em metros)
 import * as THREE from 'three';
-import { block, box, cyl, planksTex, tilesTex, checkerTex, rng } from './core.js';
+import { block, box, cyl, tilesTex, checkerTex, rng, pbr } from './core.js';
 
 export function interiorMaterials() {
   const std = (o) => new THREE.MeshStandardMaterial({ roughness: 0.8, ...o });
-  const planks = planksTex([168, 104, 58], 11, 20);
-  planks.repeat.set(1 / 2.2, 1 / 2.2);
-  const planksDark = planksTex([120, 70, 38], 12, 20);
-  planksDark.repeat.set(1 / 2.2, 1 / 2.2);
   const tiles = tilesTex('#e8e1d2', '#b9ae9a', 8);
   tiles.repeat.set(1 / 1.2, 1 / 1.2);
   const plaid = checkerTex('#2b3a5c', '#f1eee6', 6);
@@ -15,8 +11,8 @@ export function interiorMaterials() {
   const plaidBeige = checkerTex('#a07a4a', '#f3ead8', 6);
   plaidBeige.repeat.set(2.5, 2.5);
   return {
-    floor: std({ map: planks, roughness: 0.55 }),
-    floorDark: std({ map: planksDark, roughness: 0.55 }),
+    floor: pbr('floor', 2.2, { normal: 0.8 }),
+    floorDark: pbr('floor', 2.2, { normal: 0.8, color: 0x9c7660 }),
     tile: std({ map: tiles, roughness: 0.35 }),
     wall: std({ color: 0xf2eadc, roughness: 0.95 }),
     cap: std({ color: 0x2a170c, roughness: 0.9 }),

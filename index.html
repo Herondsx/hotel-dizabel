@@ -48,6 +48,14 @@
   </div>
 
   <div class="cursor" aria-hidden="true"><span class="cursor__label"></span></div>
+  <div class="peek" aria-hidden="true">
+    <div class="peek__img"><img alt=""></div>
+    <div class="peek__body">
+      <small class="peek__eyebrow"></small>
+      <b class="peek__name"></b>
+      <span class="peek__cta">Clique para ver as fotos</span>
+    </div>
+  </div>
   <div class="grain" aria-hidden="true"></div>
 
   <!-- Navegação -->
@@ -103,13 +111,24 @@
             <a class="btn btn--ghost" href="https://reservas.dizabel.com.br/" target="_blank" rel="noopener">Consultar valores</a>
           </div>
         </div>
+        <div class="hero__pins" aria-label="Ambientes na fachada"></div>
         <div class="hero__aside">
-          <button class="mood" type="button" aria-pressed="true" aria-label="Alternar entre dia e noite">
-            <span class="mood__opt mood__opt--day">Dia</span>
-            <span class="mood__track"><i></i></span>
-            <span class="mood__opt mood__opt--night">Noite</span>
-          </button>
-          <p class="hero__hint">Mova o mouse · role para entrar</p>
+          <div class="tod" role="group" aria-label="Hora do dia em Campos do Jordão">
+            <div class="tod__top">
+              <span class="tod__icon" aria-hidden="true"><i></i></span>
+              <span class="tod__label">Hora do dia</span>
+              <output class="tod__time">18:48</output>
+              <button class="tod__play" type="button" aria-pressed="false" aria-label="Ver o dia passar"><span></span></button>
+            </div>
+            <input class="tod__range" type="range" min="5.6" max="22.4" step="0.01" value="18.8" aria-label="Escolha a hora do dia">
+            <div class="tod__marks">
+              <button type="button" data-h="7">Manhã</button>
+              <button type="button" data-h="12.5">Dia</button>
+              <button type="button" data-h="18.05">Pôr do sol</button>
+              <button type="button" data-h="20.8">Noite</button>
+            </div>
+          </div>
+          <p class="hero__hint">Arraste para girar · passe o mouse nas janelas</p>
         </div>
         <div class="hero__scroll" aria-hidden="true"><span></span></div>
         <div class="hero__fade"></div>
@@ -180,13 +199,18 @@
           </div>
         </aside>
 
+        <div class="maquete__zoom" role="group" aria-label="Zoom da maquete">
+          <button type="button" data-zoom="in" aria-label="Aproximar">+</button>
+          <button type="button" data-zoom="out" aria-label="Afastar">−</button>
+          <button type="button" data-zoom="reset" aria-label="Visão geral">⟲</button>
+        </div>
         <div class="maquete__floors" role="group" aria-label="Filtrar por andar">
           <button type="button" class="is-active" data-floor="all">Todos</button>
           <button type="button" data-floor="0">Térreo</button>
           <button type="button" data-floor="1">1º andar</button>
           <button type="button" data-floor="2">2º andar</button>
         </div>
-        <p class="maquete__hint"><span>Arraste para girar</span><span>Passe o mouse</span><span>Clique para ampliar</span></p>
+        <p class="maquete__hint"><span>Arraste para girar</span><span>Clique para ampliar</span><span>← → navegar</span></p>
         <p class="maquete__note">Representação ilustrativa. A disposição real dos ambientes pode variar.</p>
       </div>
     </section>

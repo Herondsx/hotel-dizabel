@@ -19,7 +19,7 @@ export const FLOORS = [
 
 const easeIO = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
 
-export function createMaquete(canvas, { pinsEl, labels = {}, onHover, onSelect } = {}) {
+export function createMaquete(canvas, { pinsEl, labels = {}, photos = {}, onHover, onSelect, onFrame, onFrameHover } = {}) {
   const mobile = window.matchMedia('(max-width: 820px)').matches;
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, mobile ? 1.5 : 1.75));
@@ -351,7 +351,7 @@ export function createMaquete(canvas, { pinsEl, labels = {}, onHover, onSelect }
   let explode = 0, explodeTarget = 0;
   let hovered = null, selected = null, floorFocus = null;
   const view = { theta: -0.5, phi: 1.15, radius: 55, target: new THREE.Vector3(0, 5, 0) };
-  const user = { theta: 0, phi: 0 };
+  const user = { theta: 0, phi: 0, zoom: 1 };
   const focus = { k: 0, target: new THREE.Vector3(), radius: 18, phi: 0.95 };
   let viewOffsetX = 0, viewOffsetY = 0;
 
@@ -415,7 +415,7 @@ export function createMaquete(canvas, { pinsEl, labels = {}, onHover, onSelect }
     view.theta += (-0.5 + user.theta + sway - view.theta) * Math.min(1, dt * 4);
     const phiGoal = lerp(basePhi, focus.phi, fk);
     view.phi += (phiGoal - view.phi) * Math.min(1, dt * 4);
-    const rGoal = lerp(baseRadius, focus.radius * Math.min(fit, 1.6), fk);
+    const rGoal = lerp(baseRadius, focus.radius * Math.min(fit, 1.6), fk) * user.zoom;
     view.radius += (rGoal - view.radius) * Math.min(1, dt * 3.5);
     const tGoal = baseTarget.lerp(focus.target, fk);
     view.target.lerp(tGoal, Math.min(1, dt * 4));
@@ -426,6 +426,67 @@ export function createMaquete(canvas, { pinsEl, labels = {}, onHover, onSelect }
       view.target.z + view.radius * st * Math.cos(view.theta),
     );
     camera.lookAt(view.target);
+  }
+
+  /* Molduras de fotos reais flutuando sobre o ambiente selecionado ---------- */
+  const frameGroup = new THREE.Group();
+  scene.add(frameGroup);
+  const frameLoader = new THREE.TextureLoader();
+  const frameTex = new Map();
+  const frameGeo = new THREE.PlaneGeometry(1, 2 / 3);
+  const borderGeo = new THREE.BoxGeometry(1.07, 2 / 3 + 0.07, 0.035);
+  const borderMat = new THREE.MeshStandardMaterial({ color: 0xf6efe2, roughness: 0.55 });
+  let frames = [], framesFor = null, hoveredFrame = null;
+  function buildFrames(id) {
+    frames.forEach((f) => frameGroup.remove(f));
+    frames = [];
+    framesFor = id;
+    if (!id) return;
+    const list = (photos[id] || []).slice(0, 4);
+    list.forEach((url, i) => {
+      let tex = frameTex.get(url);
+      if (!tex) {
+        tex = frameLoader.load(url);
+        tex.colorSpace = THREE.SRGBColorSpace;
+        tex.anisotropy = 4;
+        frameTex.set(url, tex);
+      }
+      const g = new THREE.Group();
+      const pic = new THREE.Mesh(frameGeo, new THREE.MeshBasicMaterial({ map: tex, toneMapped: false }));
+      pic.position.z = 0.02;
+      pic.userData.frame = i;
+      const border = new THREE.Mesh(borderGeo, borderMat);
+      border.castShadow = true;
+      g.add(border, pic);
+      g.userData = { idx: i, born: t + 0.35 + i * 0.09, pic, hover: 0 };
+      g.scale.setScalar(0.0001);
+      frameGroup.add(g);
+      frames.push(g);
+    });
+  }
+  const fRight = new THREE.Vector3(), fUp = new THREE.Vector3(), fBase = new THREE.Vector3();
+  const backOut = (x) => 1 + 2.70158 * Math.pow(x - 1, 3) + 1.70158 * Math.pow(x - 1, 2);
+  function updateFrames(dt) {
+    if (selected !== framesFor) buildFrames(selected);
+    if (!frames.length) return;
+    const c = cells.find((cc) => cc.id === selected);
+    cellWorldCenter(c, fBase);
+    fRight.setFromMatrixColumn(camera.matrixWorld, 0);
+    fUp.setFromMatrixColumn(camera.matrixWorld, 1);
+    const n = frames.length, w = Math.min(2.3, 7.4 / n), gap = w * 1.08;
+    const vis = focus.k > 0.55 ? 1 : 0;
+    frames.forEach((g, i) => {
+      const u = g.userData;
+      const age = clamp((t - u.born) / 0.7);
+      u.hover += ((g === hoveredFrame ? 1 : 0) - u.hover) * Math.min(1, dt * 10);
+      const sc = w * backOut(age) * vis * (1 + u.hover * 0.12) + 0.0001;
+      g.scale.set(sc, sc, sc);
+      const off = (i - (n - 1) / 2) * gap;
+      g.position.copy(fBase)
+        .addScaledVector(fRight, off)
+        .addScaledVector(fUp, 2.3 + Math.sin(t * 1.3 + i * 1.7) * 0.07 + u.hover * 0.18 + (1 - age) * -0.6);
+      g.quaternion.copy(camera.quaternion);
+    });
   }
 
   /* Pinos (rótulos HTML) ---------------------------------------------------- */
@@ -475,6 +536,14 @@ export function createMaquete(canvas, { pinsEl, labels = {}, onHover, onSelect }
   const hits = cells.map((c) => c.hit);
   let dragging = false, down = null, pointerInside = false;
 
+  function pickFrame(ev) {
+    if (!frames.length || focus.k < 0.55) return null;
+    const r = canvas.getBoundingClientRect();
+    ndc.set(((ev.clientX - r.left) / r.width) * 2 - 1, -((ev.clientY - r.top) / r.height) * 2 + 1);
+    ray.setFromCamera(ndc, camera);
+    const hit = ray.intersectObjects(frames.map((f) => f.userData.pic), false)[0];
+    return hit ? frames.find((f) => f.userData.pic === hit.object) : null;
+  }
   function pick(ev) {
     const r = canvas.getBoundingClientRect();
     ndc.set(((ev.clientX - r.left) / r.width) * 2 - 1, -((ev.clientY - r.top) / r.height) * 2 + 1);
@@ -511,11 +580,31 @@ export function createMaquete(canvas, { pinsEl, labels = {}, onHover, onSelect }
     floors.forEach((f) => (f.liftTarget = i !== null && f.i > i ? 26 : 0));
   }
 
+  const touches = new Map();
+  let pinch = null;
   canvas.addEventListener('pointerdown', (ev) => {
+    touches.set(ev.pointerId, { x: ev.clientX, y: ev.clientY });
+    if (touches.size === 2) {
+      const [a, b] = [...touches.values()];
+      pinch = { d: Math.hypot(a.x - b.x, a.y - b.y), z: user.zoom };
+      down = null;
+      return;
+    }
     down = { x: ev.clientX, y: ev.clientY, t: user.theta, p: user.phi, type: ev.pointerType };
     dragging = false;
   });
+  canvas.addEventListener('wheel', (ev) => {
+    if (!ev.ctrlKey) return;
+    ev.preventDefault();
+    user.zoom = clamp(user.zoom * (1 + ev.deltaY * 0.004), 0.5, 1.45);
+  }, { passive: false });
   window.addEventListener('pointermove', (ev) => {
+    if (touches.has(ev.pointerId)) touches.set(ev.pointerId, { x: ev.clientX, y: ev.clientY });
+    if (pinch && touches.size === 2) {
+      const [a, b] = [...touches.values()];
+      user.zoom = clamp(pinch.z * (pinch.d / Math.max(20, Math.hypot(a.x - b.x, a.y - b.y))), 0.5, 1.45);
+      return;
+    }
     if (down) {
       const dx = ev.clientX - down.x, dy = ev.clientY - down.y;
       if (!dragging && Math.hypot(dx, dy) > 6) {
@@ -529,12 +618,28 @@ export function createMaquete(canvas, { pinsEl, labels = {}, onHover, onSelect }
       return;
     }
     if (!pointerInside || explode < 0.7) return;
+    const f = pickFrame(ev);
+    if (f !== hoveredFrame) {
+      hoveredFrame = f;
+      onFrameHover && onFrameHover(f ? f.userData.idx : null);
+    }
+    if (f) {
+      canvas.style.cursor = 'zoom-in';
+      return;
+    }
     setHover(pick(ev));
   });
   window.addEventListener('pointerup', (ev) => {
-    if (down && !dragging && explode > 0.7) {
-      const id = pick(ev);
-      select(id === selected ? null : id);
+    touches.delete(ev.pointerId);
+    if (touches.size < 2) pinch = null;
+    if (down && !dragging && explode > 0.7 && ev.target === canvas) {
+      const f = pickFrame(ev);
+      if (f) {
+        onFrame && onFrame(selected, f.userData.idx);
+      } else {
+        const id = pick(ev);
+        select(id === selected ? null : id);
+      }
     }
     down = null;
     dragging = false;
@@ -544,6 +649,14 @@ export function createMaquete(canvas, { pinsEl, labels = {}, onHover, onSelect }
   canvas.addEventListener('pointerleave', () => {
     pointerInside = false;
     if (!down) setHover(null);
+    if (hoveredFrame) {
+      hoveredFrame = null;
+      onFrameHover && onFrameHover(null);
+    }
+  });
+  window.addEventListener('pointercancel', (ev) => {
+    touches.delete(ev.pointerId);
+    pinch = null;
   });
 
   /* Loop -------------------------------------------------------------------- */
@@ -565,11 +678,11 @@ export function createMaquete(canvas, { pinsEl, labels = {}, onHover, onSelect }
     const dt = Math.min(0.05, (now - last) / 1000);
     last = now;
     if (!active) return;
-    t += dt;
     step(dt);
     renderer.render(scene, camera);
   }
   function step(dt) {
+    t += dt;
     if (focusAnim) {
       focus.k = clamp(focus.k + focusAnim * dt * 1.1);
       if (focus.k === 0 || focus.k === 1) focusAnim = 0;
@@ -593,6 +706,7 @@ export function createMaquete(canvas, { pinsEl, labels = {}, onHover, onSelect }
       f.scale.x = 1 + Math.sin(t * 9.1) * 0.05;
     }
     for (const l of fireLights) l.intensity = 5 + Math.sin(t * 11) * 1.2 + Math.sin(t * 17.3) * 0.8;
+    updateFrames(dt);
     updatePins();
   }
   requestAnimationFrame(frame);
@@ -606,6 +720,8 @@ export function createMaquete(canvas, { pinsEl, labels = {}, onHover, onSelect }
     select,
     setFloor,
     setViewOffset(px, py = 0) { viewOffsetX = px; viewOffsetY = py; resize(); },
+    zoomBy(f) { user.zoom = clamp(user.zoom * f, 0.5, 1.45); },
+    resetView() { user.theta = 0; user.phi = 0; user.zoom = 1; },
     renderOnce(dt = 1) { for (let i = 0; i < 40; i++) step(dt / 40 * 3); renderer.render(scene, camera); },
     get selected() { return selected; },
     renderer,

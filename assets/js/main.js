@@ -514,7 +514,11 @@ function showDetail(id, lock = false) {
 function goToMaquete(id) {
   scrollToY(maqueteOpenY(), {
     duration: 2.2,
-    onComplete: () => setTimeout(() => (maquete ? maquete.select(id) : showDetail(id, true)), 150),
+    onComplete: () => {
+      showDetail(id, true);
+      // a maquete pode ainda estar carregando: seleciona assim que estiver pronta
+      initMaquete().then(() => setTimeout(() => maquete && maquete.select(id), 150));
+    },
   });
 }
 
@@ -529,31 +533,145 @@ $$('.maquete__floors button').forEach((b) =>
   }),
 );
 
+$$('.maquete__zoom button').forEach((b) =>
+  b.addEventListener('click', () => {
+    if (!maquete) return;
+    const z = b.dataset.zoom;
+    if (z === 'in') maquete.zoomBy(0.8);
+    if (z === 'out') maquete.zoomBy(1.25);
+    if (z === 'reset') {
+      maquete.select(null);
+      maquete.setFloor(null);
+      maquete.resetView();
+      $$('.maquete__floors button').forEach((x) => x.classList.toggle('is-active', x.dataset.floor === 'all'));
+    }
+  }),
+);
+window.addEventListener('keydown', (e) => {
+  if (!maquete || !stageVisible || !stage.classList.contains('is-open') || !tour.hidden) return;
+  if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+    e.preventDefault();
+    const i = MQ_ORDER.indexOf(mqSelected);
+    const dir = e.key === 'ArrowRight' ? 1 : -1;
+    const next = i < 0 ? (dir > 0 ? 0 : MQ_ORDER.length - 1) : (i + dir + MQ_ORDER.length) % MQ_ORDER.length;
+    maquete.select(MQ_ORDER[next]);
+  }
+  if (e.key === 'Escape' && mqSelected) maquete.select(null);
+});
+
 /* ------------------------------------------------------------------------- */
 /* Cenas 3D                                                                   */
 /* ------------------------------------------------------------------------- */
 let hero = null;
 const stage = $('.maquete__stage');
 
+/* Cartão de prévia (segue o cursor) ------------------------------------------- */
+const peek = $('.peek');
+const peekImg = $('.peek__img img');
+let peekId = null;
+const mouse = { x: -999, y: -999 };
+window.addEventListener('pointermove', (e) => {
+  mouse.x = e.clientX;
+  mouse.y = e.clientY;
+  if (peekId) positionPeek(mouse.x, mouse.y);
+}, { passive: true });
+function positionPeek(x, y) {
+  const w = 260, h = peek.offsetHeight || 240;
+  let px = x + 24, py = y + 24;
+  if (px + w > window.innerWidth - 12) px = x - w - 24;
+  if (py + h > window.innerHeight - 12) py = y - h - 18;
+  peek.style.transform = `translate3d(${Math.round(px)}px, ${Math.round(py)}px, 0)`;
+}
+function showPeek(id, x = mouse.x, y = mouse.y, cta = 'Clique para ver as fotos') {
+  const s = id && SPACES[id];
+  if (!s || !finePointer) return hidePeek();
+  if (peekId !== id) {
+    peekId = id;
+    peekImg.src = s.thumbs[0];
+    $('.peek__name').textContent = s.name;
+    $('.peek__eyebrow').textContent = s.kind === 'room' ? `Até ${s.guests} hóspedes${s.hydro ? ' · hidromassagem' : ''}` : s.floor === 'Jardim' ? 'No jardim' : 'Área comum';
+  }
+  $('.peek__cta').textContent = cta;
+  peek.classList.add('is-on');
+  positionPeek(x, y);
+}
+function hidePeek() {
+  peekId = null;
+  peek.classList.remove('is-on');
+}
+
+/* Hora do dia ------------------------------------------------------------------ */
+const tod = $('.tod');
+const todRange = $('.tod__range');
+const todTime = $('.tod__time');
+const todPlay = $('.tod__play');
+let rangeDrag = false;
+const fmtHour = (h) => {
+  let hh = Math.floor(h), mm = Math.round((h - hh) * 60);
+  if (mm === 60) { hh++; mm = 0; }
+  return `${String(hh).padStart(2, '0')}:${String(mm).padStart(2, '0')}`;
+};
+function syncTime(h) {
+  if (!rangeDrag) todRange.value = h;
+  todTime.textContent = fmtHour(h);
+  tod.classList.toggle('is-night', h >= 18.45 || h < 6.1);
+  $$('.tod__marks button').forEach((b) => b.classList.toggle('is-active', Math.abs(+b.dataset.h - h) < 0.35));
+}
+
 async function initHero() {
   if (!webgl) return;
   try {
     setLoad(12);
-    const { createHero } = await import('./3d/hero.js');
-    setLoad(55);
+    const [{ createHero }, core] = await Promise.all([import('./3d/hero.js'), import('./3d/core.js')]);
+    setLoad(35);
     await new Promise((r) => requestAnimationFrame(r));
-    hero = createHero($('.hero__canvas'), { logoUrl: 'assets/img/logo.png' });
-    setLoad(85);
-    if (reduced) hero.skipIntro();
-    // dia/noite
-    const mood = $('.mood');
-    mood.addEventListener('click', () => {
-      const night = !hero.isNight();
-      hero.setNight(night);
-      mood.setAttribute('aria-pressed', night);
+    const pinsEl = $('.hero__pins');
+    hero = createHero($('.hero__canvas'), {
+      logoUrl: 'assets/img/logo.png',
+      pinsEl,
+      onHover: (id, x, y) => (id ? showPeek(id, x, y) : hidePeek()),
+      onSelect: (id) => {
+        hidePeek();
+        openTour(id);
+      },
+      onTime: syncTime,
     });
-    // mouse
-    const heroEl = $('.hero');
+    // progresso real do carregamento das texturas
+    let done = false;
+    hero.ready.then(() => (done = true));
+    while (!done) {
+      const p = core.texProgress;
+      setLoad(35 + (p.total ? (p.loaded / p.total) * 55 : 0));
+      await new Promise((r) => setTimeout(r, 120));
+    }
+    setLoad(92);
+    if (reduced) hero.skipIntro();
+    syncTime(hero.getTime());
+    todRange.addEventListener('pointerdown', () => (rangeDrag = true));
+    window.addEventListener('pointerup', () => (rangeDrag = false));
+    todRange.addEventListener('input', () => {
+      hero.setPlaying(false);
+      todPlay.setAttribute('aria-pressed', 'false');
+      hero.setTime(+todRange.value, false);
+      syncTime(+todRange.value);
+    });
+    $$('.tod__marks button').forEach((b) =>
+      b.addEventListener('click', () => {
+        hero.setPlaying(false);
+        todPlay.setAttribute('aria-pressed', 'false');
+        hero.setTime(+b.dataset.h, true);
+      }),
+    );
+    todPlay.addEventListener('click', () => {
+      const on = !hero.isPlaying();
+      hero.setPlaying(on);
+      todPlay.setAttribute('aria-pressed', String(on));
+    });
+    // rótulos dos pinos visíveis por alguns segundos após a entrada
+    setTimeout(() => {
+      pinsEl.classList.add('show-labels');
+      setTimeout(() => pinsEl.classList.remove('show-labels'), 6500);
+    }, 4200);
     window.addEventListener('pointermove', (e) => {
       hero.setPointer((e.clientX / window.innerWidth) * 2 - 1, -((e.clientY / window.innerHeight) * 2 - 1));
     }, { passive: true });
@@ -563,40 +681,48 @@ async function initHero() {
         hero.setPointer(clamp(e.gamma / 30, -1, 1), clamp((e.beta - 45) / 30, -1, 1));
       }, { passive: true });
     }
-    heroEl.dataset.ready = '1';
   } catch (err) {
     console.error(err);
     html.classList.add('no-webgl');
   }
 }
 
-async function initMaquete() {
-  if (!webgl || maquete) return;
+let maquetePromise = null;
+function initMaquete() {
+  if (!webgl) return Promise.resolve();
+  // garante uma única instância (o pré-aquecimento e o gatilho de rolagem podem chamar juntos)
+  if (!maquetePromise) maquetePromise = createMaqueteOnce();
+  return maquetePromise;
+}
+async function createMaqueteOnce() {
   try {
     const { createMaquete } = await import('./3d/maquete.js');
     const labels = Object.fromEntries(Object.entries(SPACES).map(([k, v]) => [k, v.label]));
     maquete = createMaquete($('.maquete__canvas'), {
       pinsEl: $('.maquete__pins'),
       labels,
+      photos: Object.fromEntries(Object.entries(SPACES).map(([k, v]) => [k, v.thumbs])),
       onHover: (id) => {
         $$('.mq-list button').forEach((b) => b.classList.toggle('is-hover', b.dataset.id === id));
         if (!mqSelected) showDetail(id);
         setForcedCursor(id ? 'Ver' : '');
+        if (id && id !== mqSelected) showPeek(id, mouse.x, mouse.y, 'Clique para entrar no ambiente');
+        else hidePeek();
       },
+      onFrame: (id, idx) => openTour(id, idx, true),
+      onFrameHover: (idx) => setForcedCursor(idx != null ? 'Ampliar' : ''),
       onSelect: (id) => {
         mqSelected = id;
+        hidePeek();
         showDetail(id, true);
-        if (id) {
-          const s = SPACES[id];
-          $$('.maquete__floors button').forEach((x) => x.classList.toggle('is-active', x.dataset.floor === 'all'));
-          void s;
-        }
+        if (id) $$('.maquete__floors button').forEach((x) => x.classList.toggle('is-active', x.dataset.floor === 'all'));
       },
     });
     layoutMaquete();
     window.addEventListener('resize', layoutMaquete);
     if (stageVisible) maquete.setActive(true);
     maquete.setExplode(lastExplode);
+    if (mqSelected) maquete.select(mqSelected);
   } catch (err) {
     console.error(err);
   }
